@@ -1,12 +1,12 @@
 import { IProductType } from "../enities/ProductType";
-import { getIds, getItems, get_fields, filter } from "../api/api";
+import { getIds, getItems, get_fields, filterSearch } from "../api/api";
 import { ResponseError } from "../enities/ResponseError";
-import { IResponseResult } from "../enities/ResponseResult";
+import { MAX_ITEMS_FOR_PAGE } from "../config/consts";
 
 export async function apiGetProducts(offset: number) {
   const resIds = await getIds({
     action: "get_ids",
-    params: { limit: 5, offset: offset * 5 },
+    params: { limit: MAX_ITEMS_FOR_PAGE, offset: offset * MAX_ITEMS_FOR_PAGE },
   });
 
   if (resIds instanceof ResponseError) {
@@ -14,21 +14,15 @@ export async function apiGetProducts(offset: number) {
     return resIds;
   }
 
-  const dataIds = (await resIds.json()) as IResponseResult<string[]>;
-
   const resProducts = await getItems({
     action: "get_items",
-    params: { ids: dataIds.result },
+    params: { ids: resIds.result },
   });
 
   if (resProducts instanceof ResponseError) {
     console.error(resProducts.status);
     return resProducts;
   }
-
-  const dataProducts = (await resProducts.json()) as IResponseResult<
-    IProductType[]
-  >;
 
   // Добовляем только уникальные id
   interface TempProductType {
@@ -37,7 +31,7 @@ export async function apiGetProducts(offset: number) {
 
   const uniqObj: TempProductType = {};
 
-  dataProducts.result.forEach((product) => {
+  resProducts.result.forEach((product) => {
     uniqObj[product.id] = product;
   });
 
@@ -59,10 +53,6 @@ export async function apiGetProductsByIds(ids: string[]) {
     return resultItems;
   }
 
-  const dataItems = (await resultItems.json()) as IResponseResult<
-    IProductType[]
-  >;
-
   // Добовляем только уникальные id
   interface TempProductType {
     [key: string]: IProductType;
@@ -70,7 +60,7 @@ export async function apiGetProductsByIds(ids: string[]) {
 
   const uniqObj: TempProductType = {};
 
-  dataItems.result.forEach((product) => {
+  resultItems.result.forEach((product) => {
     uniqObj[product.id] = product;
   });
 
@@ -80,38 +70,49 @@ export async function apiGetProductsByIds(ids: string[]) {
 }
 
 export async function apiGetFields() {
-  const result = await get_fields({ action: "get_fields" });
+  const data = await get_fields({ action: "get_fields" });
 
-  if (result instanceof ResponseError) {
-    console.error(result.status, result.errorText);
-    return result;
+  if (data instanceof ResponseError) {
+    console.error(data.status, data.errorText);
+    return data;
   }
 
-  const data = (await result.json()) as IResponseResult<string[]>;
   return data.result;
 }
 
 type SearchType = {
   [type: string]: string | number;
 };
-export async function apiSearchProductsByIds(param: SearchType) {
+export async function apiSearchIds(param: SearchType) {
   for (const key in param) {
     if (key === "price") {
       let value = param[key];
       value = Number(value);
+      param[key] = value;
     }
   }
 
-  const result = await filter({
+  const data = await filterSearch({
     action: "filter",
     params: { ...param },
   });
 
-  if (result instanceof ResponseError) {
-    console.error(result.status, result.errorText);
-    return result;
+  if (data instanceof ResponseError) {
+    console.error(data.status, data.errorText);
+    return data;
   }
 
-  const data = (await result.json()) as IResponseResult<string[]>;
   return data.result;
+}
+
+export async function apiGetAmountPages() {
+  const data = await getIds({ action: "get_ids" });
+
+  if (data instanceof ResponseError) {
+    console.error(data.status);
+
+    return data;
+  }
+
+  return data.result.length;
 }
