@@ -1,0 +1,35 @@
+.pagination {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+
+  padding: 10px;
+  background-color: rgb(63, 63, 63);
+  border-radius: 5px;
+}
+
+.pagination__items {
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+}
+
+.pagination__item {
+  border: 1px solid red;
+}
+
+.icon {
+  width: 50px;
+  height: 50px;
+  animation: anim-spiner 0.5s linear infinite;
+}
+
+@keyframes anim-spiner {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
