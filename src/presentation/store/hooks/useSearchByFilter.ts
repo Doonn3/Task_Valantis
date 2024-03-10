@@ -1,10 +1,10 @@
 import { ResponseError, apiService } from "@/infrastructure";
 import { useState } from "react";
 
-export function useFilter() {
+export function useSearchByFilter() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [fields, setFields] = useState<string[]>([]);
-  const [filterResult, setFilterResult] = useState<string[][]>([]);
+  const [searchResult, setSearchResult] = useState<string[][]>([]);
 
   const initFields = async () => {
     setIsLoading(true);
@@ -32,19 +32,19 @@ export function useFilter() {
       return;
     }
 
-    setFilterResult(result);
+    setSearchResult(result);
     setIsLoading(false);
     return result;
   };
 
   const resetSearchResult = () => {
-    setFilterResult([]);
+    setSearchResult([]);
   };
 
   return {
     isLoading,
     fields,
-    filterResult,
+    searchResult,
     initFields,
     search,
     resetSearchResult

@@ -25,10 +25,22 @@ export function usePagination(min: number, max: number) {
     return temp;
   };
 
+  const firstValue = () => {
+    setNum(min);
+    return min;
+  };
+
+  const lastValue = () => {
+    setNum(max);
+    return max;
+  };
+
   return {
     prev,
     next,
     setValue,
+    firstValue,
+    lastValue,
     num,
   };
 }

@@ -1,8 +1,8 @@
 import { ResponseError, apiService } from "@/infrastructure";
 import { useState } from "react";
 
-export function usePageCount() {
-  const [pageCount, setPageCount] = useState(0);
+export function usePages() {
+  const [totalPageCount, setTotalPageCount] = useState(0);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -16,14 +16,14 @@ export function usePageCount() {
       return;
     }
 
-    setPageCount(result);
+    setTotalPageCount(result);
     setIsLoading(false);
   };
 
   return {
     isLoading,
-    pageCount,
+    totalPageCount,
     initAmountPages,
-    setPageCount
+    setTotalPageCount
   };
 }

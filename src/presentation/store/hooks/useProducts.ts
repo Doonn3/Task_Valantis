@@ -14,8 +14,6 @@ export function useProducts() {
       return;
     }
 
-    console.log(data);
-
     setProducts(data);
     setIsLoading(false);
   };
@@ -28,8 +26,6 @@ export function useProducts() {
       setIsLoading(false);
       return;
     }
-
-    console.log(data);
 
     setProducts(data);
     setIsLoading(false);

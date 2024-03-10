@@ -24,6 +24,12 @@ export function ButtonList(props: Readonly<PropsType>) {
       for (let i = 1; i <= props.total; i += 1) {
         result.push(i);
       }
+    } else if (props.total - props.maxItems < props.currPage) {
+      for (let i = 0; i < props.maxItems; i += 1) {
+        const calc = props.total - i;
+        result.push(calc);
+      }
+      result.reverse();
     } else {
       for (let i = 0; i < props.maxItems; i += 1) {
         if (i < mid) {
@@ -44,9 +50,7 @@ export function ButtonList(props: Readonly<PropsType>) {
       return (
         <Button
           key={index}
-          className={
-            mark === String(props.currPage) ? style.pagination__item : ""
-          }
+          className={mark === props.currPage ? style.pagination__item : ""}
           isDisabled={props.isDisabled}
           onClick={() => {
             if (typeof mark === "number") {
