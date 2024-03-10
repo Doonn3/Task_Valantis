@@ -1,0 +1,32 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  width: 400px;
+  height: 150px;
+
+  padding: 10px;
+
+  background-color: rgb(0, 0, 0);
+}
+
+.card__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 5px;
+}
+
+.card__blue {
+  background-color: rgba(131, 131, 255, 0.3);
+}
+
+.card__yellow {
+  background-color: rgba(255, 255, 0, 0.3);
+}
+
+.card__red {
+  background-color: rgba(255, 0, 0, 0.3);
+}

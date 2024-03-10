@@ -1,0 +1,26 @@
+.product__skeleton {
+  width: 400px;
+  height: 150px;
+
+  background: linear-gradient(
+    45deg,
+    #000000,
+    #000000,
+    #000000,
+    #1a1919,
+    #1a1919,
+    #000000
+  );
+  background-size: 200% 100%;
+
+  animation: gradient 5s linear infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 110% 0;
+  }
+  100% {
+    background-position: -1110% 0;
+  }
+}
