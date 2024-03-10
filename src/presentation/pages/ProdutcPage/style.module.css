@@ -1,0 +1,31 @@
+.productPage {
+  display: flex;
+  flex-direction: column;
+
+  height: 100vh;
+}
+
+.productPage__products {
+  flex: 1 1 auto;
+
+  padding: 10px 0;
+
+  overflow: auto;
+}
+
+.productPage__control {
+  display: flex;
+  justify-content: space-between;
+
+  width: 100%;
+  min-height: 80px;
+
+  margin-top: auto;
+  padding: 10px;
+
+  background-color: rgba(255, 0, 0, 0.2);
+
+  z-index: 1999;
+
+  overflow: hidden;
+}

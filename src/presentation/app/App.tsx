@@ -1,10 +1,14 @@
 import "./styles/App.css";
 
+import { StoreProvider } from "@/presentation/store";
+
+import { ProductPage } from "@/presentation/pages/ProdutcPage/";
+
 function App() {
   return (
-    <>
-      <div>Start</div>
-    </>
+    <StoreProvider>
+      <ProductPage />
+    </StoreProvider>
   );
 }
 

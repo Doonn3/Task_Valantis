@@ -1,12 +1,12 @@
 import { IProductType } from "../enities/ProductType";
-import { getIds, getItems, get_fields, filter } from "../api/api";
+import { api } from "../api";
 import { ResponseError } from "../enities/ResponseError";
-import { IResponseResult } from "../enities/ResponseResult";
+import { MAX_ITEMS_FOR_PAGE } from "../config/consts";
 
 export async function apiGetProducts(offset: number) {
-  const resIds = await getIds({
-    action: "get_ids",
-    params: { limit: 5, offset: offset * 5 },
+  const resIds = await api.get_ids({
+    limit: MAX_ITEMS_FOR_PAGE,
+    offset: offset * MAX_ITEMS_FOR_PAGE,
   });
 
   if (resIds instanceof ResponseError) {
@@ -14,21 +14,12 @@ export async function apiGetProducts(offset: number) {
     return resIds;
   }
 
-  const dataIds = (await resIds.json()) as IResponseResult<string[]>;
-
-  const resProducts = await getItems({
-    action: "get_items",
-    params: { ids: dataIds.result },
-  });
+  const resProducts = await api.get_items({ ids: resIds.result });
 
   if (resProducts instanceof ResponseError) {
     console.error(resProducts.status);
     return resProducts;
   }
-
-  const dataProducts = (await resProducts.json()) as IResponseResult<
-    IProductType[]
-  >;
 
   // Добовляем только уникальные id
   interface TempProductType {
@@ -37,7 +28,7 @@ export async function apiGetProducts(offset: number) {
 
   const uniqObj: TempProductType = {};
 
-  dataProducts.result.forEach((product) => {
+  resProducts.result.forEach((product) => {
     uniqObj[product.id] = product;
   });
 
@@ -48,20 +39,13 @@ export async function apiGetProducts(offset: number) {
 }
 
 export async function apiGetProductsByIds(ids: string[]) {
-  const resultItems = await getItems({
-    action: "get_items",
-    params: { ids: ids },
-  });
+  const resultItems = await api.get_items({ ids: ids });
 
   if (resultItems instanceof ResponseError) {
     console.error(resultItems.status);
 
     return resultItems;
   }
-
-  const dataItems = (await resultItems.json()) as IResponseResult<
-    IProductType[]
-  >;
 
   // Добовляем только уникальные id
   interface TempProductType {
@@ -70,7 +54,7 @@ export async function apiGetProductsByIds(ids: string[]) {
 
   const uniqObj: TempProductType = {};
 
-  dataItems.result.forEach((product) => {
+  resultItems.result.forEach((product) => {
     uniqObj[product.id] = product;
   });
 
@@ -80,38 +64,52 @@ export async function apiGetProductsByIds(ids: string[]) {
 }
 
 export async function apiGetFields() {
-  const result = await get_fields({ action: "get_fields" });
+  const data = await api.get_fields();
 
-  if (result instanceof ResponseError) {
-    console.error(result.status, result.errorText);
-    return result;
+  if (data instanceof ResponseError) {
+    console.error(data.status, data.errorText);
+    return data;
   }
 
-  const data = (await result.json()) as IResponseResult<string[]>;
   return data.result;
 }
 
 type SearchType = {
   [type: string]: string | number;
 };
-export async function apiSearchProductsByIds(param: SearchType) {
+export async function apiSearchIds(param: SearchType) {
   for (const key in param) {
     if (key === "price") {
       let value = param[key];
       value = Number(value);
+      param[key] = value;
     }
   }
 
-  const result = await filter({
-    action: "filter",
-    params: { ...param },
-  });
+  const data = await api.filter({ ...param });
 
-  if (result instanceof ResponseError) {
-    console.error(result.status, result.errorText);
-    return result;
+  if (data instanceof ResponseError) {
+    console.error(data.status, data.errorText);
+    return data;
   }
 
-  const data = (await result.json()) as IResponseResult<string[]>;
-  return data.result;
+  const result = [];
+
+  for (let i = 0; i < data.result.length; i += MAX_ITEMS_FOR_PAGE) {
+    result.push(data.result.slice(i, i + MAX_ITEMS_FOR_PAGE));
+  }
+
+  return result;
+}
+
+export async function apiGetAmountPages() {
+  const data = await api.get_ids();
+
+  if (data instanceof ResponseError) {
+    console.error(data.status);
+
+    return data;
+  }
+
+  return Math.floor(data.result.length / MAX_ITEMS_FOR_PAGE);
 }
