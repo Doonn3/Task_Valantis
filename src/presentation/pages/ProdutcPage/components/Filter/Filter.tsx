@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 
 import style from "./style.module.css";
@@ -12,7 +11,7 @@ type PropsType = {
 
 export function Filter(props: Readonly<PropsType>) {
   const [value, setValue] = useState<string>("");
-  const [option, setOption] = useState<string>('');
+  const [option, setOption] = useState<string>("");
 
   useEffect(() => {
     if (props.filterType.length > 0) {
@@ -32,10 +31,14 @@ export function Filter(props: Readonly<PropsType>) {
 
   const onSelectOption = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setOption(e.target.value);
+    setValue('');
   };
 
   const onInput = (e: React.FormEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value;
+
+    if (option === "price" && isNaN(Number(value))) return;
+
     setValue(value);
 
     if (value.length <= 0) {
@@ -47,7 +50,6 @@ export function Filter(props: Readonly<PropsType>) {
     if (value.trim().length > 1) {
       props.emit(option, value);
     }
-    console.log(option);
   };
 
   return (
