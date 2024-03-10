@@ -1,26 +1,26 @@
 import style from "./style.module.css";
-import { Product, ProductType } from "../Product";
-import { ProductSkeleton } from "../Product/Product";
+import { CardSkeleton } from "@/presentation/shared/ui/CardSkeleton";
+import { Card, CardType } from "@/presentation/shared/ui/Card";
 
 interface PropsType {
-  products: ProductType[];
+  products: CardType[];
   isLoading?: boolean;
 }
 
 export function ProductList(props: PropsType) {
   const productsMap = () => {
     if (props.isLoading) {
-      return Array.from({ length: 10 }, (_, index) => {
-        return <ProductSkeleton key={index} />;
+      return Array.from({ length: 20 }, (_, index) => {
+        return <CardSkeleton key={index} />;
       });
     }
 
     return props.products.map((product) => {
       return (
-        <Product
+        <Card
           key={product.id}
           id={product.id}
-          brand={product.brand}
+          brand={product.brand ?? "Unknown"}
           price={product.price}
           product={product.product}
         />

@@ -8,40 +8,47 @@ import { ProductList } from "./components/ProductList";
 import { Filter } from "./components/Filter";
 
 export function ProductPage() {
-  const { storeFilter, storePageAmount, storeProducts } =
-    useContext(StoreContext)!;
+  const { store } = useContext(StoreContext)!;
 
   useEffect(() => {
-    storePageAmount.getAmountPages();
-    storeProducts.getProducts();
-    storeFilter.getFields();
+    store.init();
   }, []);
 
-  const onPagination = (page: number) => {
+  const goToPage = (page: number) => {
     console.log(page, "CURR PAGE NUMBER");
-    storeProducts.getProducts(page);
+    store.getProducts(page);
   };
 
   const onFilter = (type: string, value: string) => {
     console.log(type, value);
-    storeFilter.search(type, value).then(() => storeProducts.getProductsByIds(storeFilter.filterResult));
+    store.searchProducts(type, value);
+  };
+
+  const cancelFilter = () => {
+    store.resetSearchResult();
   };
 
   return (
     <main className={style.productPage}>
-      <ProductList
-        products={storeProducts.products}
-        isLoading={storeProducts.isLoading}
-      />
+      <div className={style.productPage__products}>
+        <ProductList
+          products={store.products.products}
+          isLoading={store.products.isLoading}
+        />
+      </div>
 
       <div className={style.productPage__control}>
-        <Filter filterType={storeFilter.fields} emit={onFilter} />
+        <Filter
+          filterType={store.filter.fields}
+          emit={onFilter}
+          emitClear={cancelFilter}
+        />
 
         <Pagination
-          min={1}
-          max={storePageAmount.pageCount}
-          isLoading={storePageAmount.isLoading}
-          onPageChange={onPagination}
+          totalItem={store.pageCount.pageCount}
+          maxShowItem={5}
+          goToPage={goToPage}
+          isLoading={store.pageCount.isLoading}
         />
       </div>
     </main>

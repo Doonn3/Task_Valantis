@@ -2,50 +2,61 @@ import style from "./style.module.css";
 import { SpinerIcon } from "@/presentation/shared/assets/SpinerIcon";
 
 import { usePagination } from "../../hooks/usePagination";
-import { Item } from "./Item";
+import { Button } from "@/presentation/shared/ui/Button";
+import { ButtonList } from "./ButtonList";
 
 type PropsType = {
   className?: string;
-  min: number;
-  max: number;
-  isLoading: boolean;
-  onPageChange: (page: number) => void;
+  totalItem: number;
+  maxShowItem: number;
+  isLoading?: boolean;
+  goToPage?: (val: number) => void;
 };
 
 export function Pagination(props: Readonly<PropsType>) {
-  const { onPageChange, min, max, className, isLoading } = props;
+  const pagination = usePagination(1, props.totalItem);
 
-  const pagination = usePagination(min, max);
+  const onPrev = () => {
+    const page = pagination.prev();
 
-  const prev = () => {
-    const currPage = pagination.prev();
-    onPageChange(currPage);
+    if (props.goToPage) props.goToPage(page);
   };
 
-  const next = () => {
-    const currPage = pagination.next();
-    onPageChange(currPage);
+  const onNext = () => {
+    const page = pagination.next();
+
+    if (props.goToPage) props.goToPage(page);
   };
 
-  const onClickItem = (id: number) => {
-    const currPage = pagination.setValue(id);
-    onPageChange(currPage);
+  const onClickItem = (val: number) => {
+    pagination.setValue(val);
+    if (props.goToPage) props.goToPage(val);
+  };
+
+  const renderPaginationButtons = () => {
+    if (props.isLoading) {
+      return <SpinerIcon className={style.icon} />;
+    } else {
+      return (
+        <ButtonList
+          total={props.totalItem}
+          currPage={pagination.num}
+          maxItems={props.maxShowItem}
+          onClickItem={onClickItem}
+        />
+      );
+    }
   };
 
   return (
-    <div className={`${style.pagination} ${className}`}>
-      <button onClick={prev}>Prev</button>
-      {isLoading ? (
-        <SpinerIcon className={style.icon} />
-      ) : (
-        <Item
-          amount={max}
-          selectItem={pagination.num}
-          onClickItem={onClickItem}
-        />
-      )}
-
-      <button onClick={next}>Next</button>
+    <div className={`${style.pagination} ${props.className}`}>
+      <Button isDisabled={props.isLoading} onClick={onPrev}>
+        Prev
+      </Button>
+      {renderPaginationButtons()}
+      <Button isDisabled={props.isLoading} onClick={onNext}>
+        Next
+      </Button>
     </div>
   );
 }

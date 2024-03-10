@@ -1,6 +1,7 @@
 .pagination {
   display: flex;
   flex-direction: row;
+  align-items: center;
   gap: 10px;
 
   padding: 10px;
@@ -8,19 +9,9 @@
   border-radius: 5px;
 }
 
-.pagination__items {
-  display: flex;
-  flex-direction: row;
-  gap: 2px;
-}
-
-.pagination__item {
-  border: 1px solid red;
-}
-
 .icon {
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
   animation: anim-spiner 0.5s linear infinite;
 }
 

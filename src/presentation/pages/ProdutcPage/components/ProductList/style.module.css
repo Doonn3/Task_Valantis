@@ -2,7 +2,7 @@
   display: grid;
   place-content: center;
 
-  grid-template-columns: repeat(4, 300px);
+  grid-template-columns: repeat(3, auto);
 
   gap: 10px;
 }
