@@ -1,5 +1,14 @@
-# React + TypeScript + Vite
+# Стек React + TypeScript + Vite
+### 1 - слой infrastructure: работа с API
+### 2 - слой presentation
+### 3 - реализован store в виде контекста. Решил не использовать Redux, Redux Toolkit (экспериментальное решение).
 
+#### Создана одна страница - ProductPage. Страница имеет пагинацию и поиск по фильтру.
+
+
+##
+##
+##
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
