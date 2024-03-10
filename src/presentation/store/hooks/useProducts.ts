@@ -1,48 +1,44 @@
 import { useState } from "react";
 
-import {
-  apiGetProducts,
-  apiGetProductsByIds,
-  ResponseError,
-  IProductType,
-} from "@/infrastructure";
+import { apiService, ResponseError, IProductType } from "@/infrastructure";
 
 export function useProducts() {
-  const [isLoading, setLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [products, setProducts] = useState<IProductType[]>([]);
 
-  const getProducts = async (pageNumber: number = 1) => {
-    setLoading(true);
-    const data = await apiGetProducts(pageNumber);
-
+  const initProducts = async (pageNumber: number = 1) => {
+    setIsLoading(true);
+    const data = await apiService.apiGetProducts(pageNumber);
     if (data instanceof ResponseError) {
-      setLoading(false);
-      return;
-    }
-
-    setProducts(data);
-    setLoading(false);
-  };
-
-  const getProductsByIds = async (ids: string[]) => {
-    setLoading(true);
-    const data = await apiGetProductsByIds(ids);
-
-    if (data instanceof ResponseError) {
-      setLoading(false);
+      setIsLoading(false);
       return;
     }
 
     console.log(data);
 
     setProducts(data);
-    setLoading(false);
+    setIsLoading(false);
+  };
+
+  const getProductsByIds = async (ids: string[]) => {
+    setIsLoading(true);
+    const data = await apiService.apiGetProductsByIds(ids);
+
+    if (data instanceof ResponseError) {
+      setIsLoading(false);
+      return;
+    }
+
+    console.log(data);
+
+    setProducts(data);
+    setIsLoading(false);
   };
 
   return {
     isLoading,
     products,
-    getProducts,
+    initProducts,
     getProductsByIds,
   };
 }

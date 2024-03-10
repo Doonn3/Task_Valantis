@@ -1,29 +1,29 @@
-import { apiGetAmountPages, ResponseError } from "@/infrastructure";
-
+import { ResponseError, apiService } from "@/infrastructure";
 import { useState } from "react";
 
 export function usePageCount() {
   const [pageCount, setPageCount] = useState(0);
 
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const getAmountPages = async () => {
-    setLoading(true);
-    const result = await apiGetAmountPages();
+  const initAmountPages = async () => {
+    setIsLoading(true);
+    const result = await apiService.apiGetAmountPages();
 
     if (result instanceof ResponseError) {
       console.error(result.status);
-      setLoading(false);
+      setIsLoading(false);
       return;
     }
 
     setPageCount(result);
-    setLoading(false);
+    setIsLoading(false);
   };
 
   return {
     isLoading,
     pageCount,
-    getAmountPages,
+    initAmountPages,
+    setPageCount
   };
 }

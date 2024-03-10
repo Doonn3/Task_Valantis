@@ -1,28 +1,23 @@
 import { ReactNode, useMemo } from "react";
 import { StoreContext } from "./StoreContext";
-import { usePageCount } from "./hooks/usePageCount";
-import { useProducts } from "./hooks/useProducts";
-import { useFilterFields } from "./hooks/useFilterFields";
+
+import { useStore } from "./model/useStore";
 
 interface StoreProviderProps {
   children: ReactNode;
 }
 
 export const StoreProvider: React.FC<StoreProviderProps> = ({ children }) => {
-  const storeProducts = useProducts();
-  const storePageAmount = usePageCount();
-  const storeFilter = useFilterFields();
+  const store = useStore();
 
-  const store = useMemo(
+  const storeMemo = useMemo(
     () => ({
-      storePageAmount,
-      storeProducts,
-      storeFilter,
+      store,
     }),
-    [storePageAmount, storeProducts, storeFilter]
+    [store]
   );
 
   return (
-    <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
+    <StoreContext.Provider value={storeMemo}>{children}</StoreContext.Provider>
   );
 };
