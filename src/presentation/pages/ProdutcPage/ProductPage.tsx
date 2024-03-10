@@ -1,11 +1,13 @@
-import style from "./style.module.css";
-
 import { useContext, useEffect } from "react";
+
 import { StoreContext } from "@/presentation/store";
+
 
 import { Pagination } from "./components/Pagination";
 import { ProductList } from "./components/ProductList";
 import { Filter } from "./components/Filter";
+
+import style from "./style.module.css";
 
 export function ProductPage() {
   const { store } = useContext(StoreContext)!;

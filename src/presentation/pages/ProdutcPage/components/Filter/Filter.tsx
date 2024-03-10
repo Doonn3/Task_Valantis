@@ -1,6 +1,7 @@
-import style from "./style.module.css";
 
 import React, { useEffect, useState } from "react";
+
+import style from "./style.module.css";
 
 type PropsType = {
   filterType: string[];

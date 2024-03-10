@@ -1,9 +1,11 @@
-import style from "./style.module.css";
 import { SpinerIcon } from "@/presentation/shared/assets/SpinerIcon";
+import { Button } from "@/presentation/shared/ui/Button";
+
 
 import { usePagination } from "../../hooks/usePagination";
-import { Button } from "@/presentation/shared/ui/Button";
 import { ButtonList } from "./ButtonList";
+
+import style from "./style.module.css";
 
 type PropsType = {
   className?: string;

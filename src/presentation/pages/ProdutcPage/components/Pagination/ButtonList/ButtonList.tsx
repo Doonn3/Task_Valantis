@@ -1,5 +1,6 @@
-import style from "./style.module.css";
 import { Button } from "@/presentation/shared/ui/Button";
+
+import style from "./style.module.css";
 
 type PropsType = {
   total: number;
@@ -9,7 +10,9 @@ type PropsType = {
   onClickItem?: (id: number) => void;
 };
 
-// TODO - решения в лоб пагинация кнопок >> подумать и переделать во что-то более в меняемое
+/*
+TODO - решения в лоб пагинация кнопок >> подумать и переделать во что-то более в меняемое
+*/
 export function ButtonList(props: Readonly<PropsType>) {
   const init = () => {
     const start = props.currPage;
