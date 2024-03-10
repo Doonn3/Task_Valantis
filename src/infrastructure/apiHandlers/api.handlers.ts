@@ -1,12 +1,12 @@
 import { IProductType } from "../enities/ProductType";
-import { getIds, getItems, get_fields, filterSearch } from "../api/api";
+import { api } from "../api";
 import { ResponseError } from "../enities/ResponseError";
 import { MAX_ITEMS_FOR_PAGE } from "../config/consts";
 
 export async function apiGetProducts(offset: number) {
-  const resIds = await getIds({
-    action: "get_ids",
-    params: { limit: MAX_ITEMS_FOR_PAGE, offset: offset * MAX_ITEMS_FOR_PAGE },
+  const resIds = await api.get_ids({
+    limit: MAX_ITEMS_FOR_PAGE,
+    offset: offset * MAX_ITEMS_FOR_PAGE,
   });
 
   if (resIds instanceof ResponseError) {
@@ -14,10 +14,7 @@ export async function apiGetProducts(offset: number) {
     return resIds;
   }
 
-  const resProducts = await getItems({
-    action: "get_items",
-    params: { ids: resIds.result },
-  });
+  const resProducts = await api.get_items({ ids: resIds.result });
 
   if (resProducts instanceof ResponseError) {
     console.error(resProducts.status);
@@ -42,10 +39,7 @@ export async function apiGetProducts(offset: number) {
 }
 
 export async function apiGetProductsByIds(ids: string[]) {
-  const resultItems = await getItems({
-    action: "get_items",
-    params: { ids: ids },
-  });
+  const resultItems = await api.get_items({ ids: ids });
 
   if (resultItems instanceof ResponseError) {
     console.error(resultItems.status);
@@ -70,7 +64,7 @@ export async function apiGetProductsByIds(ids: string[]) {
 }
 
 export async function apiGetFields() {
-  const data = await get_fields({ action: "get_fields" });
+  const data = await api.get_fields();
 
   if (data instanceof ResponseError) {
     console.error(data.status, data.errorText);
@@ -92,21 +86,24 @@ export async function apiSearchIds(param: SearchType) {
     }
   }
 
-  const data = await filterSearch({
-    action: "filter",
-    params: { ...param },
-  });
+  const data = await api.filter({ ...param });
 
   if (data instanceof ResponseError) {
     console.error(data.status, data.errorText);
     return data;
   }
 
-  return data.result;
+  const result = [];
+
+  for (let i = 0; i < data.result.length; i += MAX_ITEMS_FOR_PAGE) {
+    result.push(data.result.slice(i, i + MAX_ITEMS_FOR_PAGE));
+  }
+
+  return result;
 }
 
 export async function apiGetAmountPages() {
-  const data = await getIds({ action: "get_ids" });
+  const data = await api.get_ids();
 
   if (data instanceof ResponseError) {
     console.error(data.status);
@@ -114,5 +111,5 @@ export async function apiGetAmountPages() {
     return data;
   }
 
-  return data.result.length;
+  return Math.floor(data.result.length / MAX_ITEMS_FOR_PAGE);
 }
